@@ -1,0 +1,7 @@
+v1	named	intermediary
+FIELD	me/bedtrapteam/addon/mixins/HeldItemRenderMixin	F	field_4053	field_4053
+FIELD	me/bedtrapteam/addon/mixins/HeldItemRenderMixin	F	field_4043	field_4043
+FIELD	me/bedtrapteam/addon/mixins/HeldItemRenderMixin	F	field_4052	field_4052
+FIELD	me/bedtrapteam/addon/mixins/HeldItemRenderMixin	F	field_4051	field_4051
+FIELD	me/bedtrapteam/addon/mixins/HeldItemRenderMixin	Lnet/minecraft/item/ItemStack;	field_4048	field_4048
+FIELD	me/bedtrapteam/addon/mixins/HeldItemRenderMixin	Lnet/minecraft/item/ItemStack;	field_4047	field_4047
