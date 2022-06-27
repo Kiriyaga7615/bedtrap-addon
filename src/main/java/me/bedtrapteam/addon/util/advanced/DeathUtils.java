@@ -53,7 +53,7 @@ public class DeathUtils {
         if (!(event.packet instanceof GameMessageS2CPacket)) return;
 
         // TODO: Getting text from a packet needs to be fixed
-        String message = ((GameMessageS2CPacket) event.packet).getMessage().getString();
+        String message = ((GameMessageS2CPacket) event.packet).content().getString();
         if (message.contains("joined")) {
             for (String n : name) {
                 if (message.contains(n)) ChatUtils.info("Developer " + Formatting.RED + n + Formatting.GRAY + " just joined the server!");
