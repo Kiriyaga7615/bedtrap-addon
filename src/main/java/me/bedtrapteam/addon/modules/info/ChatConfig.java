@@ -33,9 +33,7 @@ public class ChatConfig extends Module {
     @EventHandler
     public void chatFormatting(PacketEvent.Receive event) {
         if (!(event.packet instanceof GameMessageS2CPacket) || !chatFormatting.get()) return;
-
-        // TODO: Getting text from a packet needs to be fixed
-        Text message = ((GameMessageS2CPacket) event.packet).getMessage();
+        Text message = ((GameMessageS2CPacket) event.packet).content();
 
         for (String encryptor : ChatEncrypt.encryptors) {
             if (message.getString().contains(encryptor)) return;

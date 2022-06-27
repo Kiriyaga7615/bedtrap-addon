@@ -48,26 +48,6 @@ public class DeathUtils {
         }
     }
 
-    @EventHandler
-    public void onJoin(PacketEvent.Receive event) {
-        if (!(event.packet instanceof GameMessageS2CPacket)) return;
-
-        // TODO: Getting text from a packet needs to be fixed
-        String message = ((GameMessageS2CPacket) event.packet).content().getString();
-        if (message.contains("joined")) {
-            for (String n : name) {
-                if (message.contains(n)) ChatUtils.info("Developer " + Formatting.RED + n + Formatting.GRAY + " just joined the server!");
-            }
-            for (String n : beta) {
-                if (message.contains(n)) ChatUtils.info("Beta user " + Formatting.GREEN + n + Formatting.GRAY + " just joined the server!");
-            }
-        }
-    }
-
-    private final String[] name = {"EurekaEffect", "Kiriyaga", "BEHA"};
-    private final String[] beta = {"Skar1o", "Ya_Pank", "Cyn41k228", "Gr1dlog", "CowboyWHCrystal", "ernanto", "_Rei_Ayanami", "ImaCactus4", "popipac", "Sssnipa"};
-
-
     public static ArrayList<String> getTargets() {
         ArrayList<String> list = new ArrayList<>();
 

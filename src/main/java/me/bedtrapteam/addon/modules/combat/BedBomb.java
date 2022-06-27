@@ -196,8 +196,8 @@ public class BedBomb extends Module {
     }
 
     @EventHandler(priority = EventPriority.HIGHEST + 1000)
-    private void onTick(TickEvent.Pre event) {
         //TODO : Bed/Anchor checks may need to be inverted, unsure how the new method returns
+    private void PreTick1(TickEvent.Pre event) {
         if (mc.world.getDimension().bedWorks()) return;
 
         boolean sHurt;
@@ -213,8 +213,7 @@ public class BedBomb extends Module {
         renderTexts.forEach(RenderText::tick);
         renderTexts.removeIf(renderText -> renderText.ticks <= 0);
 
-        if (pauseOnCA.get() && (Modules.get().get(CrystalAura.class).isActive() || Modules.get().get(AutoCrystal.class).isActive()))
-            return;
+        if (pauseOnCA.get() && (Modules.get().get(CrystalAura.class).isActive() || Modules.get().get(AutoCrystal.class).isActive())) return;
 
         target = TargetUtils.getPlayerTarget(targetRange.get(), SortPriority.LowestDistance);
         if (TargetUtils.isBadTarget(target, targetRange.get()) || pauseOnUse.get() && mc.player.isUsingItem()) return;
@@ -256,7 +255,7 @@ public class BedBomb extends Module {
     }
 
     @EventHandler
-    private void onPreSlowTick(TickEvent.Pre event) {
+    private void PreTick2(TickEvent.Pre event) {
         if (TargetUtils.isBadTarget(target, targetRange.get()) || pauseOnUse.get() && mc.player.isUsingItem()) return;
 
         if (bBreakerMain.get()

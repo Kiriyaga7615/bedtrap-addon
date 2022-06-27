@@ -30,7 +30,6 @@ public class AntiRespawnLose extends Module {
 
         BlockPos blockPos = ((PlayerInteractBlockC2SPacket) event.packet).getBlockHitResult().getBlockPos();
 
-        //TODO : Bed/Anchor checks may need to be inverted, unsure how the new method returns
         boolean isOver = mc.world.getDimension().bedWorks();
         boolean isNether = mc.world.getDimension().respawnAnchorWorks();
 

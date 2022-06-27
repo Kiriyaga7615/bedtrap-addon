@@ -36,8 +36,7 @@ public class ChatEncrypt extends Module {
     public void onReceiveMessage(PacketEvent.Receive event) {
         if (!(event.packet instanceof GameMessageS2CPacket) || mode.get() == Mode.Encrypt) return;
 
-        // TODO: Getting text from a packet needs to be fixed
-        String message = ((GameMessageS2CPacket) event.packet).getMessage().getString();
+        String message = ((GameMessageS2CPacket) event.packet).content().getString();
 
         String way;
         TextUtils.Decryptor decryptor;
