@@ -130,6 +130,8 @@ public class CrystalUtils {
                         double p = MathHelper.lerp(m, box.minZ, box.maxZ);
 
                         ((IVec3d) vec3d).set(n + g, o, p + h);
+
+                        // TODO: Fix null raycast error
                         ((IRaycastContext) raycastContext).set(vec3d, source, RaycastContext.ShapeType.COLLIDER, RaycastContext.FluidHandling.NONE, entity);
 
                         if (raycast(raycastContext, obsidianPos, ignoreTerrain).getType() == HitResult.Type.MISS) i++;

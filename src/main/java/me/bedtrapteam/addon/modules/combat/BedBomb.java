@@ -160,6 +160,8 @@ public class BedBomb extends Module {
     public BedBomb() {
         super(BedTrap.Combat, "bed-bomb", "Massive ownage incoming :massivetroll:");
     }
+    
+    // TODO: Fix this not doing anything
 
     @Override
     public void onActivate() {
@@ -196,7 +198,6 @@ public class BedBomb extends Module {
     }
 
     @EventHandler(priority = EventPriority.HIGHEST + 1000)
-        //TODO : Bed/Anchor checks may need to be inverted, unsure how the new method returns
     private void PreTick1(TickEvent.Pre event) {
         if (mc.world.getDimension().bedWorks()) return;
 
