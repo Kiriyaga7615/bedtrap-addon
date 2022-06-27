@@ -15,7 +15,7 @@ import meteordevelopment.meteorclient.utils.player.InvUtils;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.item.Items;
 import net.minecraft.network.packet.s2c.play.DisconnectS2CPacket;
-import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
 
 public class LogOut extends Module {
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
@@ -50,7 +50,7 @@ public class LogOut extends Module {
     }
 
     private void disconnect(boolean error) {
-        mc.player.networkHandler.onDisconnect(new DisconnectS2CPacket(new LiteralText(error ? "Failed to login: Invalid session (Try restarting your game and the launcher)" : "There are fewer totems in your inventory than " + totemCount.get())));
+        mc.player.networkHandler.onDisconnect(new DisconnectS2CPacket(Text.literal(error ? "Failed to login: Invalid session (Try restarting your game and the launcher)" : "There are fewer totems in your inventory than " + totemCount.get())));
     }
 
     @EventHandler

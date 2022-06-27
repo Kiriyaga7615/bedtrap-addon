@@ -1,7 +1,6 @@
 package me.bedtrapteam.addon.modules.info;
 
 import me.bedtrapteam.addon.BedTrap;
-import me.bedtrapteam.addon.util.other.Authenticator;
 import me.bedtrapteam.addon.util.other.TextUtils;
 import meteordevelopment.meteorclient.events.game.SendMessageEvent;
 import meteordevelopment.meteorclient.events.packets.PacketEvent;
@@ -19,7 +18,6 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
 import java.util.ArrayList;
-import java.util.Objects;
 
 public class ChatEncrypt extends Module {
     private final SettingGroup sgDefault = settings.getDefaultGroup();

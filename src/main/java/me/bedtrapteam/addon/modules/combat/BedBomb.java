@@ -197,7 +197,7 @@ public class BedBomb extends Module {
 
     @EventHandler(priority = EventPriority.HIGHEST + 1000)
     private void onTick(TickEvent.Pre event) {
-        //TODO : This may need to be inverted to work correctly I'm not sure if the new method returns true or false by default
+        //TODO : Bed/Anchor checks may need to be inverted, unsure how the new method returns
         if (mc.world.getDimension().bedWorks()) return;
 
         boolean sHurt;

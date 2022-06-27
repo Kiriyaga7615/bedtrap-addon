@@ -14,8 +14,8 @@ import org.apache.logging.log4j.Logger;
 import java.io.File;
 
 public class BedTrap extends MeteorAddon {
-    public static final String ADDON = "BedTrap";
-    public static final String VERSION = Wrapper.isBeta() || Wrapper.isDev() ? "455-beta" : "454";
+    public static final String ADDON = "Bedtrap Public";
+    public static final String VERSION = "455";
     public static long initTime;
 
     public static final Category Combat = new Category("Combat+", Items.RED_BED.getDefaultStack());
@@ -39,7 +39,7 @@ public class BedTrap extends MeteorAddon {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             log("Saving config...");
             Config.get().save();
-            log("Thanks for using " + ADDON + " " + VERSION + "! Don't forget to join our discord -> https://discord.gg/4cupzRkP29");
+            log("Thanks for using " + ADDON + " " + VERSION + "!");
         }));
     }
 
