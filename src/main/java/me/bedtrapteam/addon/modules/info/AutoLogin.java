@@ -1,6 +1,7 @@
 package me.bedtrapteam.addon.modules.info;
 
 import me.bedtrapteam.addon.BedTrap;
+import meteordevelopment.meteorclient.events.game.ReceiveMessageEvent;
 import meteordevelopment.meteorclient.events.packets.PacketEvent;
 import meteordevelopment.meteorclient.settings.Setting;
 import meteordevelopment.meteorclient.settings.SettingGroup;
@@ -26,6 +27,8 @@ public class AutoLogin extends Module {
     @EventHandler
     public void onPacket(PacketEvent.Receive event) {
         if (!(event.packet instanceof GameMessageS2CPacket)) return;
+
+        // TODO: Getting text from a packet needs to be fixed
         if (!((GameMessageS2CPacket) event.packet).getSender().toString().contains("000000000")) return;
 
         String message = ((GameMessageS2CPacket) event.packet).getMessage().getString();

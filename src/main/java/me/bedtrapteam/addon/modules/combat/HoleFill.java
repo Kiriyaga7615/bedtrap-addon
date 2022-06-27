@@ -66,7 +66,6 @@ public class HoleFill extends Module {
     public final List<PlayerEntity> targets = new ArrayList<>();
     private final Pool<Hole> holePool = new Pool<>(Hole::new);
     private final List<Hole> holes = new ArrayList<>();
-    private final byte NULL = 0;
     private int bpt;
 
     public HoleFill() {
@@ -109,7 +108,6 @@ public class HoleFill extends Module {
                         for (Direction dir : Direction.values()) {
                             if (dir == direction.getOpposite() || dir == Direction.UP) continue;
                             if (isBlastResist(blockPos.offset(direction).offset(dir))) blocks++;
-                            else continue;
                         }
 
                         air = direction;
@@ -118,6 +116,7 @@ public class HoleFill extends Module {
 
                 if (mc.player.getBlockPos().equals(blockPos) && self.get()) blockPos = blockPos.up(2);
 
+                byte NULL = 0;
                 if (blocks == 5 && air == null) holes.add(holePool.get().set(blockPos, NULL));
                 else if (blocks == 8 && doubles.get() && air != null) {
                     holes.add(holePool.get().set(blockPos, Dir.get(air)));
@@ -168,7 +167,7 @@ public class HoleFill extends Module {
             BlockHitResult result = new BlockHitResult(Utils.vec3d(pos), Direction.DOWN, pos, false);
             int prevSlot = mc.player.getInventory().selectedSlot;
             InvUtils.swap(iresult.slot(), false);
-            mc.getNetworkHandler().sendPacket(new PlayerInteractBlockC2SPacket(Hand.MAIN_HAND, result));
+            mc.getNetworkHandler().sendPacket(new PlayerInteractBlockC2SPacket(Hand.MAIN_HAND, result, 0));
             mc.player.getInventory().selectedSlot = prevSlot;
             if (swing.get()) mc.player.swingHand(Hand.MAIN_HAND);
             else mc.getNetworkHandler().sendPacket(new HandSwingC2SPacket(Hand.MAIN_HAND));

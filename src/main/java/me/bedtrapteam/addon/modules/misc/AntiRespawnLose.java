@@ -29,8 +29,11 @@ public class AntiRespawnLose extends Module {
         if(!(event.packet instanceof PlayerInteractBlockC2SPacket)) return;
 
         BlockPos blockPos = ((PlayerInteractBlockC2SPacket) event.packet).getBlockHitResult().getBlockPos();
-        boolean isOver = mc.world.getDimension().isBedWorking();
-        boolean isNether = mc.world.getDimension().isRespawnAnchorWorking();
+
+        // TODO: These may also need to be inverted I'm not sure if the refactored checks return inverted or not
+        boolean isOver = mc.world.getDimension().bedWorks();
+        boolean isNether = mc.world.getDimension().respawnAnchorWorks();
+
         boolean isBed = getBlock(blockPos) instanceof BedBlock;
         boolean isAnchor = getBlock(blockPos).equals(Blocks.RESPAWN_ANCHOR);
 

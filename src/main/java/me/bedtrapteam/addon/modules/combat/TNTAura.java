@@ -50,7 +50,8 @@ public class TNTAura extends Module {
 
 
     public enum mineMode {
-        Normal, Instant;
+        Normal,
+        Instant
     }
 
     //general
@@ -58,8 +59,8 @@ public class TNTAura extends Module {
     private final Setting<Integer> delay = sgGeneral.add(new IntSetting.Builder().name("place-delay").description("How many ticks between obsidian placement").defaultValue(1).build());
     private final Setting<Boolean> rotate = sgGeneral.add(new BoolSetting.Builder().name("rotate").description("Rotates towards blocks when interacting").defaultValue(false).build());
     //auto break
-    private final Setting<Boolean> autoBreak = sgAutoBreak.add(new BoolSetting.Builder().name("auto-break").description("attemps to auto break").defaultValue(false).build());
-    public final Setting<mineMode> breakMode = sgAutoBreak.add(new EnumSetting.Builder<mineMode>().name("break-mode").defaultValue(mineMode.Normal).visible(() -> autoBreak.get()).build());
+    private final Setting<Boolean> autoBreak = sgAutoBreak.add(new BoolSetting.Builder().name("auto-break").description("attempts to auto break").defaultValue(false).build());
+    public final Setting<mineMode> breakMode = sgAutoBreak.add(new EnumSetting.Builder<mineMode>().name("break-mode").defaultValue(mineMode.Normal).visible(autoBreak::get).build());
     //pause
     private final Setting<Boolean> burrowPause = sgPause.add(new BoolSetting.Builder().name("pause-on-burrow").description("will pause if enemy is burrowed").defaultValue(true).build());
     private final Setting<Boolean> antiSelf = sgPause.add(new BoolSetting.Builder().name("anti-self").description("pause if enemy in your hole").defaultValue(true).build());
@@ -118,7 +119,7 @@ public class TNTAura extends Module {
     @EventHandler
     private void onTick(TickEvent.Pre event) {
 
-        //auto dissable
+        //auto disable
         FindItemResult obsidian = InvUtils.findInHotbar(Items.OBSIDIAN);
 
         if (!obsidian.isHotbar() && !toggled) {
@@ -265,7 +266,7 @@ public class TNTAura extends Module {
 
     private void igniteTNT(BlockPos pos, FindItemResult item) {
         InvUtils.swap(item.slot(), true);
-        mc.interactionManager.interactBlock(mc.player, mc.world, Hand.MAIN_HAND, new BlockHitResult(new Vec3d(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5), Direction.UP, pos, true));
+        mc.interactionManager.interactBlock(mc.player, Hand.MAIN_HAND, new BlockHitResult(new Vec3d(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5), Direction.UP, pos, true));
         InvUtils.swapBack();
     }
 
@@ -319,9 +320,7 @@ public class TNTAura extends Module {
 
     private boolean antiSelf(LivingEntity target) {
 
-        if (!(mc.player.getBlockPos().getX() == target.getBlockPos().getX() && mc.player.getBlockPos().getZ() == target.getBlockPos().getZ() && mc.player.getBlockPos().getY() == target.getBlockPos().getY()))
-            return false;
-        return true;
+        return mc.player.getBlockPos().getX() == target.getBlockPos().getX() && mc.player.getBlockPos().getZ() == target.getBlockPos().getZ() && mc.player.getBlockPos().getY() == target.getBlockPos().getY();
     }
 
     @Override

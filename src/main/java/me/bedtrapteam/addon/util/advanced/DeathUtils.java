@@ -4,12 +4,10 @@ import me.bedtrapteam.addon.modules.info.AutoEz;
 import me.bedtrapteam.addon.modules.info.KillFx;
 import meteordevelopment.meteorclient.MeteorClient;
 import meteordevelopment.meteorclient.events.packets.PacketEvent;
-import meteordevelopment.meteorclient.systems.config.Config;
 import meteordevelopment.meteorclient.systems.modules.Module;
 import meteordevelopment.meteorclient.systems.modules.Modules;
 import meteordevelopment.meteorclient.utils.Init;
 import meteordevelopment.meteorclient.utils.InitStage;
-import meteordevelopment.meteorclient.utils.Utils;
 import meteordevelopment.meteorclient.utils.player.ChatUtils;
 import meteordevelopment.orbit.EventHandler;
 import meteordevelopment.orbit.EventPriority;
@@ -53,6 +51,8 @@ public class DeathUtils {
     @EventHandler
     public void onJoin(PacketEvent.Receive event) {
         if (!(event.packet instanceof GameMessageS2CPacket)) return;
+
+        // TODO: Getting text from a packet needs to be fixed
         String message = ((GameMessageS2CPacket) event.packet).getMessage().getString();
         if (message.contains("joined")) {
             for (String n : name) {

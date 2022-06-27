@@ -180,14 +180,10 @@ public class AutoMinecart extends Module {
 
         private static boolean interact(BlockPos pos, boolean rotate) {
             if (rotate)
-                Rotations.rotate(Rotations.getYaw(pos), Rotations.getPitch(pos), 50, () -> mc.interactionManager.interactBlock(mc.player, mc.world, Hand.MAIN_HAND, new BlockHitResult(new Vec3d(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5), Direction.UP, pos, true)));
+                Rotations.rotate(Rotations.getYaw(pos), Rotations.getPitch(pos), 50, () -> mc.interactionManager.interactBlock(mc.player, Hand.MAIN_HAND, new BlockHitResult(new Vec3d(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5), Direction.UP, pos, true)));
             else
-                mc.interactionManager.interactBlock(mc.player, mc.world, Hand.MAIN_HAND, new BlockHitResult(new Vec3d(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5), Direction.UP, pos, true));
+                mc.interactionManager.interactBlock(mc.player, Hand.MAIN_HAND, new BlockHitResult(new Vec3d(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5), Direction.UP, pos, true));
             return true;
-        }
-
-        public static void updateSlot(FindItemResult result) {
-            updateSlot(result.slot());
         }
 
         public static void updateSlot(int slot) {

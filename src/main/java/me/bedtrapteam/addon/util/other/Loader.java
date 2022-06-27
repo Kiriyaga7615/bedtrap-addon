@@ -17,8 +17,6 @@ import meteordevelopment.meteorclient.MeteorClient;
 import meteordevelopment.meteorclient.systems.Systems;
 import meteordevelopment.meteorclient.systems.commands.Commands;
 import meteordevelopment.meteorclient.systems.hud.HUD;
-import net.minecraft.client.network.ServerInfo;
-import net.minecraft.client.option.ServerList;
 
 import java.lang.invoke.MethodHandles;
 import java.util.concurrent.ExecutorService;
@@ -40,7 +38,6 @@ public class Loader {
 
     // Second stage of loading
     public static void init() {
-        addCpvpEu(); //adding our cpvp server lmao
         setHwid(); // set the current hwid
         //LeakWrapper.setup(); // doesn't work cause of resources which is read only
         //checkAuth(); // check auth server
@@ -139,26 +136,6 @@ public class Loader {
 
         loaded = 581; // set the loaded flag to true. This ensures all module states were loaded before doing Systems.save() in doExit()
     }
-
-    public static void addCpvpEu(){
-            ServerList servers = new ServerList(mc);
-            servers.loadFile();
-
-            boolean b = false;
-            for (int i = 0; i < servers.size(); i++) {
-                ServerInfo server = servers.get(i);
-
-                if (server.address.contains("eu.cpvp.me")) {
-                    b = true;
-                    break;
-                }
-            }
-
-            if (!b) {
-                servers.add(new ServerInfo("cpvp.me", "eu.cpvp.me", false));
-                servers.saveFile();
-            }
-        }
 
     public static void moduleAuth() {  // Original: moduleAuth
         // check at random

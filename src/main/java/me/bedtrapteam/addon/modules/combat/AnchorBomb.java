@@ -16,7 +16,6 @@ import meteordevelopment.meteorclient.utils.player.FindItemResult;
 import meteordevelopment.meteorclient.utils.player.InvUtils;
 import meteordevelopment.meteorclient.utils.render.color.SettingColor;
 import meteordevelopment.orbit.EventHandler;
-import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Items;
@@ -25,7 +24,6 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -115,18 +113,18 @@ public class AnchorBomb extends Module {
         if (placeTimer == 2) {
             info("placing");
             Interaction.updateSlot(anchor, true);
-            mc.getNetworkHandler().sendPacket(new PlayerInteractBlockC2SPacket(anchor.getHand(), result));
+            mc.getNetworkHandler().sendPacket(new PlayerInteractBlockC2SPacket(anchor.getHand(), result, 0));
             Interaction.doSwing(anchor.getHand(), false);
         }
         if (placeTimer == 1) {
             Interaction.updateSlot(glowstone, true);
-            mc.getNetworkHandler().sendPacket(new PlayerInteractBlockC2SPacket(glowstone.getHand(), result));
+            mc.getNetworkHandler().sendPacket(new PlayerInteractBlockC2SPacket(glowstone.getHand(), result, 0));
             Interaction.doSwing(glowstone.getHand(), false);
         }
         if (placeTimer <= 0) {
             if (!mc.world.getBlockState(blockPos).isAir()) {
                 Interaction.updateSlot(anchor, true);
-                mc.interactionManager.interactBlock(mc.player, mc.world, anchor.getHand(), result);
+                mc.interactionManager.interactBlock(mc.player, anchor.getHand(), result);
                 Interaction.doSwing(anchor.getHand(), false);
             }
 

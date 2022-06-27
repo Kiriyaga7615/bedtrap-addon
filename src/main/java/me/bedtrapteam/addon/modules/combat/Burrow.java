@@ -121,7 +121,7 @@ public class Burrow extends Module {
         mc.player.networkHandler.sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(mc.player.getX(), mc.player.getY() + 1.01, mc.player.getZ(), true));
         mc.player.networkHandler.sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(mc.player.getX(), mc.player.getY() + 1.15, mc.player.getZ(), true));
         InvUtils.swap(slot, true);
-        mc.interactionManager.interactBlock(mc.player, mc.world, slot == 45 ? Hand.OFF_HAND : Hand.MAIN_HAND, new BlockHitResult(Utils.vec3d(pos), Direction.UP, pos, false));
+        mc.interactionManager.interactBlock(mc.player, slot == 45 ? Hand.OFF_HAND : Hand.MAIN_HAND, new BlockHitResult(Utils.vec3d(pos), Direction.UP, pos, false));
         mc.player.networkHandler.sendPacket(new HandSwingC2SPacket(slot == 45 ? Hand.OFF_HAND : Hand.MAIN_HAND));
         InvUtils.swapBack();
         mc.player.networkHandler.sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(mc.player.getX(), mc.player.getY() + rubberbandHeight.get(), mc.player.getZ(), false));

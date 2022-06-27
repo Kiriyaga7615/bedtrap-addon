@@ -55,7 +55,7 @@ public class Authenticator {
     // HWID Generation
     public static String getHwid() {
         OSType os = getOs();
-        if (os.equals(OSType.Unsupported)) exit("Your OS aint supported!");
+        if (os.equals(OSType.Unsupported)) exit("Your OS isn't supported!");
         switch (os) {
             case Windows -> {
                 return getWindowsHWID();

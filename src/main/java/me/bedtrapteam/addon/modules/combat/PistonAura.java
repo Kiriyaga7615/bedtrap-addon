@@ -1,6 +1,5 @@
 package me.bedtrapteam.addon.modules.combat;
 
-import com.google.common.eventbus.Subscribe;
 import me.bedtrapteam.addon.BedTrap;
 import me.bedtrapteam.addon.modules.info.Notifications;
 import me.bedtrapteam.addon.util.advanced.Interaction;
@@ -226,7 +225,7 @@ public class PistonAura extends Module {
         Hand hand = itemResult.isOffhand() ? Hand.OFF_HAND : Hand.MAIN_HAND;
 
         if (!itemResult.isOffhand()) mc.player.getInventory().selectedSlot = itemResult.slot();
-        mc.interactionManager.interactBlock(mc.player, mc.world, hand, new BlockHitResult(closestVec3d(blockPos), Direction.DOWN, blockPos, false));
+        mc.interactionManager.interactBlock(mc.player, hand, new BlockHitResult(closestVec3d(blockPos), Direction.DOWN, blockPos, false));
         doSwing(swing.get(), packetSwing.get(), hand);
     }
 
@@ -271,7 +270,6 @@ public class PistonAura extends Module {
         if (!findInHotbar(Items.END_CRYSTAL).found() || !findInHotbar(Items.PISTON, Items.STICKY_PISTON).found() || !findInHotbar(Items.REDSTONE_BLOCK).found() || !findInHotbar(Items.NETHERITE_PICKAXE, Items.DIAMOND_PICKAXE).found()) {
             info(name, "Can't find required items, toggling...");
             toggle();
-            return;
         }
     }
 

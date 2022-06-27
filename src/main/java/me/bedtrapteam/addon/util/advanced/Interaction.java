@@ -14,7 +14,6 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.Box;
 
 import javax.annotation.Nullable;
-import javax.swing.*;
 
 import java.util.function.Predicate;
 
@@ -63,16 +62,9 @@ public class Interaction {
         else mc.player.swingHand(hand);
     }
 
-    public static Hand toHand(SwingHand swingHand) {
-        return switch (swingHand) {
-            case MainHand, Auto -> Hand.MAIN_HAND;
-            case OffHand -> Hand.OFF_HAND;
-        };
-    }
-
     public static void placeBlock(Hand hand, BlockHitResult result, boolean packetPlace) {
-        if (packetPlace) mc.getNetworkHandler().sendPacket(new PlayerInteractBlockC2SPacket(hand, result));
-        else mc.interactionManager.interactBlock(mc.player, mc.world, hand, result);
+        if (packetPlace) mc.getNetworkHandler().sendPacket(new PlayerInteractBlockC2SPacket(hand, result, 0));
+        else mc.interactionManager.interactBlock(mc.player, hand, result);
     }
 
     public static boolean hasEntity(Box box) {
