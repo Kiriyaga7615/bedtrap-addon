@@ -28,7 +28,6 @@ public class Loader {
         //Modules
         BedTrap.addModules(
                 // Info
-                new AutoLogin(),
                 new ChatEncrypt(),
                 new Notifications(),
                 new ChatConfig(),
