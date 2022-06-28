@@ -4,12 +4,10 @@ import me.bedtrapteam.addon.modules.info.AutoEz;
 import me.bedtrapteam.addon.modules.info.KillFx;
 import meteordevelopment.meteorclient.MeteorClient;
 import meteordevelopment.meteorclient.events.packets.PacketEvent;
-import meteordevelopment.meteorclient.systems.config.Config;
 import meteordevelopment.meteorclient.systems.modules.Module;
 import meteordevelopment.meteorclient.systems.modules.Modules;
 import meteordevelopment.meteorclient.utils.Init;
 import meteordevelopment.meteorclient.utils.InitStage;
-import meteordevelopment.meteorclient.utils.Utils;
 import meteordevelopment.meteorclient.utils.player.ChatUtils;
 import meteordevelopment.orbit.EventHandler;
 import meteordevelopment.orbit.EventPriority;
@@ -49,24 +47,6 @@ public class DeathUtils {
             Modules.get().get(KillFx.class).onKill(player);
         }
     }
-
-    @EventHandler
-    public void onJoin(PacketEvent.Receive event) {
-        if (!(event.packet instanceof GameMessageS2CPacket)) return;
-        String message = ((GameMessageS2CPacket) event.packet).getMessage().getString();
-        if (message.contains("joined")) {
-            for (String n : name) {
-                if (message.contains(n)) ChatUtils.info("Developer " + Formatting.RED + n + Formatting.GRAY + " just joined the server!");
-            }
-            for (String n : beta) {
-                if (message.contains(n)) ChatUtils.info("Beta user " + Formatting.GREEN + n + Formatting.GRAY + " just joined the server!");
-            }
-        }
-    }
-
-    private final String[] name = {"EurekaEffect", "Kiriyaga", "BEHA"};
-    private final String[] beta = {"Skar1o", "Ya_Pank", "Cyn41k228", "Gr1dlog", "CowboyWHCrystal", "ernanto", "_Rei_Ayanami", "ImaCactus4", "popipac", "Sssnipa"};
-
 
     public static ArrayList<String> getTargets() {
         ArrayList<String> list = new ArrayList<>();

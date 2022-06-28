@@ -3,7 +3,7 @@
   "id": "bedtrap",
   "version": "452",
   "name": "BedTrap",
-  "description": "bebebebeb",
+  "description": "The last update for Bedtrap is here, courtesy of that one furry everyone loves!",
   "authors": [
     "Kiriyaga",
     "EurekaEffect"
@@ -23,7 +23,7 @@
   },
   "depends": {
     "java": ">=17",
-    "minecraft": ">=1.18.2",
-    "meteor-client": ">0.4.7"
+    "minecraft": ">=1.19",
+    "meteor-client": ">=0.4.9"
   }
 }

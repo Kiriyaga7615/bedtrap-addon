@@ -8,7 +8,6 @@ import meteordevelopment.orbit.EventHandler;
 import net.minecraft.network.packet.c2s.play.ClientCommandC2SPacket;
 import net.minecraft.util.math.MathHelper;
 
-// TODO: отрезать панку руки за такой код (сделано)
 public class EFly extends Module {
 
     public enum Mode {Boost, Automatic}

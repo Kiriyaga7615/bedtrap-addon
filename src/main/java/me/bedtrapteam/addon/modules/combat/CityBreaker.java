@@ -44,7 +44,7 @@ public class CityBreaker extends Module {
     private final Setting<Boolean> rotate = sgGeneral.add(new BoolSetting.Builder().name("rotate").description("Automatically faces towards the blocks being placed.").defaultValue(false).build());
     //private final Setting<Boolean> keepBreaking = sgGeneral.add(new BoolSetting.Builder().name("keep-breaking").defaultValue(false).build());
 
-    private final Setting<Boolean> rightClickEat = sgMisc.add(new BoolSetting.Builder().name("right-click-eat").description("Stops breaking the block and starts eating EGapple.").defaultValue(false).build());
+    private final Setting<Boolean> rightClickEat = sgMisc.add(new BoolSetting.Builder().name("right-click-eat").description("Stops breaking the block and starts eating Egaps.").defaultValue(false).build());
     private final Setting<Boolean> cancelEat = sgMisc.add(new BoolSetting.Builder().name("cancel-eat").description("Press right button again to stop eating.").defaultValue(true).visible(rightClickEat::get).build());
     private final Setting<Boolean> useCrystals   = sgMisc.add(new BoolSetting.Builder().name("use-crystals").description("Places crystal forward to the target city block.").defaultValue(true).build());
     private final Setting<Double> breakProgress = sgMisc.add(new DoubleSetting.Builder().name("break-progress").description("Places crystal if break progress of breaking block is higher.").defaultValue(0.979).sliderRange(0, 1).visible(useCrystals::get).build());
@@ -62,7 +62,8 @@ public class CityBreaker extends Module {
         super(BedTrap.Combat, "city-breaker", "Automatically breaks target's surround.");
     }
 
-    private FindItemResult pickaxe, gap, crystal, obsidian;
+    private FindItemResult crystal;
+    private FindItemResult obsidian;
     private BlockPos breakPos;
     private PlayerEntity target;
     private boolean isEating;
@@ -101,14 +102,14 @@ public class CityBreaker extends Module {
             return;
         }
 
-        pickaxe = InvUtils.findInHotbar((ironPickaxe.get() ? Items.IRON_PICKAXE : null), Items.NETHERITE_PICKAXE, Items.DIAMOND_PICKAXE);
+        FindItemResult pickaxe = InvUtils.findInHotbar((ironPickaxe.get() ? Items.IRON_PICKAXE : null), Items.NETHERITE_PICKAXE, Items.DIAMOND_PICKAXE);
         if (!pickaxe.found()) {
             Notifications.send("There's no pickaxe in your hotbar", notifications);
             toggle();
             return;
         }
 
-        gap = InvUtils.find(Items.ENCHANTED_GOLDEN_APPLE, Items.GOLDEN_APPLE);
+        FindItemResult gap = InvUtils.find(Items.ENCHANTED_GOLDEN_APPLE, Items.GOLDEN_APPLE);
         if (rightClickEat.get() && mc.options.useKey.isPressed() && gap.found()) isEating = true;
 
         if (isEating) {
@@ -130,39 +131,34 @@ public class CityBreaker extends Module {
             return;
         }
 
-        switch (breakMode.get()) {
-            case Client -> {
-                mc.player.getInventory().selectedSlot = pickaxe.slot();
-                mc.interactionManager.updateBlockBreakingProgress(breakPos, CityUtils.getDirection(breakPos));
+        if (breakMode.get() == Mode.Client) {
+            mc.player.getInventory().selectedSlot = pickaxe.slot();
+            mc.interactionManager.updateBlockBreakingProgress(breakPos, CityUtils.getDirection(breakPos));
 
-                crystal = InvUtils.findInHotbar(Items.END_CRYSTAL);
-                obsidian = InvUtils.findInHotbar(Items.OBSIDIAN);
-                if (useCrystals.get() && CityUtils.getCrystalPos(breakPos, support.get()) != null && crystal.found()) {
-                    float progress = ((ClientPlayerInteractionManagerAccessor) mc.interactionManager).getBreakingProgress();
-                    if (progress < breakProgress.get()) return;
+            crystal = InvUtils.findInHotbar(Items.END_CRYSTAL);
+            obsidian = InvUtils.findInHotbar(Items.OBSIDIAN);
+            if (useCrystals.get() && CityUtils.getCrystalPos(breakPos, support.get()) != null && crystal.found()) {
+                float progress = ((ClientPlayerInteractionManagerAccessor) mc.interactionManager).getBreakingProgress();
+                if (progress < breakProgress.get()) return;
 
-                    if (support.get() && obsidian.found()) {
-                        supportTask.run(() -> {
-                            int prevSlot = mc.player.getInventory().selectedSlot;
-                            if (mc.player.getOffHandStack().getItem() != Items.OBSIDIAN)
-                                mc.player.getInventory().selectedSlot = obsidian.slot();
-                            mc.interactionManager.interactBlock(mc.player, mc.world, obsidian.getHand(), new BlockHitResult(mc.player.getPos(), Direction.DOWN, CityUtils.getCrystalPos(breakPos, support.get()), true));
-                            mc.player.getInventory().selectedSlot = prevSlot;
-                        });
-                    }
-
-                    crystalTask.run(() -> {
+                if (support.get() && obsidian.found()) {
+                    supportTask.run(() -> {
                         int prevSlot = mc.player.getInventory().selectedSlot;
-                        if (mc.player.getOffHandStack().getItem() != Items.END_CRYSTAL)
-                            mc.player.getInventory().selectedSlot = crystal.slot();
-                        mc.interactionManager.interactBlock(mc.player, mc.world, crystal.getHand(), new BlockHitResult(mc.player.getPos(), Direction.DOWN, CityUtils.getCrystalPos(breakPos, false), true));
+                        if (mc.player.getOffHandStack().getItem() != Items.OBSIDIAN)
+                            mc.player.getInventory().selectedSlot = obsidian.slot();
+                        mc.interactionManager.interactBlock(mc.player, obsidian.getHand(), new BlockHitResult(mc.player.getPos(), Direction.DOWN, CityUtils.getCrystalPos(breakPos, support.get()), true));
                         mc.player.getInventory().selectedSlot = prevSlot;
                     });
                 }
+
+                crystalTask.run(() -> {
+                    int prevSlot = mc.player.getInventory().selectedSlot;
+                    if (mc.player.getOffHandStack().getItem() != Items.END_CRYSTAL)
+                        mc.player.getInventory().selectedSlot = crystal.slot();
+                    mc.interactionManager.interactBlock(mc.player, crystal.getHand(), new BlockHitResult(mc.player.getPos(), Direction.DOWN, CityUtils.getCrystalPos(breakPos, false), true));
+                    mc.player.getInventory().selectedSlot = prevSlot;
+                });
             }
-//            case Packet -> {
-//
-//            }
         }
     }
 

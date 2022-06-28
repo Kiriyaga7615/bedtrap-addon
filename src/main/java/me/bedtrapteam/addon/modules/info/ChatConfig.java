@@ -1,14 +1,14 @@
 package me.bedtrapteam.addon.modules.info;
 
 import me.bedtrapteam.addon.BedTrap;
+import meteordevelopment.meteorclient.events.game.ReceiveMessageEvent;
 import meteordevelopment.meteorclient.events.packets.PacketEvent;
 import meteordevelopment.meteorclient.settings.*;
 import meteordevelopment.meteorclient.systems.modules.Module;
 import meteordevelopment.meteorclient.utils.player.ChatUtils;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.network.packet.s2c.play.GameMessageS2CPacket;
-import net.minecraft.text.BaseText;
-import net.minecraft.text.LiteralText;
+import net.minecraft.text.MutableText;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -33,19 +33,19 @@ public class ChatConfig extends Module {
     @EventHandler
     public void chatFormatting(PacketEvent.Receive event) {
         if (!(event.packet instanceof GameMessageS2CPacket) || !chatFormatting.get()) return;
-        Text message = ((GameMessageS2CPacket) event.packet).getMessage();
+        Text message = ((GameMessageS2CPacket) event.packet).content();
 
         for (String encryptor : ChatEncrypt.encryptors) {
             if (message.getString().contains(encryptor)) return;
         }
 
-        mc.inGameHud.getChatHud().addMessage(new LiteralText("").setStyle(Style.EMPTY.withFormatting(getFormatting(formattingMode.get()))).append(message));
+        mc.inGameHud.getChatHud().addMessage(Text.literal("").setStyle(Style.EMPTY.withFormatting(getFormatting(formattingMode.get()))).append(message));
         event.cancel();
     }
 
-    public LiteralText getPrefix() {
-        BaseText logo = new LiteralText(text.get());
-        LiteralText prefix = new LiteralText("");
+    public Text getPrefix() {
+        MutableText logo = Text.literal(text.get());
+        MutableText prefix = Text.literal("");
         logo.setStyle(logo.getStyle().withFormatting(Formatting.RED));
         prefix.setStyle(prefix.getStyle().withFormatting(Formatting.RED));
         prefix.append("[");

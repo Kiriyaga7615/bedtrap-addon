@@ -5,7 +5,6 @@ import meteordevelopment.meteorclient.utils.Utils;
 import meteordevelopment.meteorclient.utils.player.FindItemResult;
 import meteordevelopment.meteorclient.utils.player.InvUtils;
 import meteordevelopment.meteorclient.utils.player.Rotations;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.Enchantments;
@@ -37,17 +36,13 @@ public class PacketUtils {
         stop(blockpos);
     }
 
-    public static void abortPacketMine(BlockPos blockpos) {
-        abort(blockpos);
-    }
-
     public static void packetPlace(BlockPos pos, FindItemResult slot, boolean rotate, boolean clientSwing) {
         if (pos != null) {
             if (rotate) Rotations.rotate(Rotations.getYaw(pos), Rotations.getPitch(pos));
             BlockHitResult result = new BlockHitResult(Utils.vec3d(pos), Direction.DOWN, pos, true);
             int prevSlot = mc.player.getInventory().selectedSlot;
             InvUtils.swap(slot.slot(), false);
-            mc.getNetworkHandler().sendPacket(new PlayerInteractBlockC2SPacket(Hand.MAIN_HAND, result));
+            mc.getNetworkHandler().sendPacket(new PlayerInteractBlockC2SPacket(Hand.MAIN_HAND, result, 0));
             mc.player.getInventory().selectedSlot = prevSlot;
             if (clientSwing) mc.player.swingHand(Hand.MAIN_HAND);
             else mc.getNetworkHandler().sendPacket(new HandSwingC2SPacket(Hand.MAIN_HAND));
@@ -56,7 +51,7 @@ public class PacketUtils {
 
 
     //Пакет Майн с таймером
-    private double progress = 0;
+    private double progress;
     private BlockPos blockPos;
     public PacketUtils(BlockPos pos) {
         blockPos = pos;

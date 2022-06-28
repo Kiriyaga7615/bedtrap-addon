@@ -16,7 +16,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
     value = {MinecraftClient.class},
     priority = 1001
 )
-public abstract class MincraftClientMixin implements IMinecraftClient {
+public abstract class MinecraftClientMixin implements IMinecraftClient {
     @Redirect(
         method = {"handleBlockBreaking"},
         at = @At(
@@ -25,7 +25,7 @@ public abstract class MincraftClientMixin implements IMinecraftClient {
         )
     )
     public boolean breakBlockCheck(ClientPlayerEntity clientPlayerEntity) {
-        return Modules.get().isActive(MultiTask.class) ? false : ((InteractEvent) MeteorClient.EVENT_BUS.post((Object)InteractEvent.get(clientPlayerEntity.isUsingItem()))).usingItem;
+        return !Modules.get().isActive(MultiTask.class) && ((InteractEvent) MeteorClient.EVENT_BUS.post((Object) InteractEvent.get(clientPlayerEntity.isUsingItem()))).usingItem;
     }
 
     @Redirect(
@@ -36,6 +36,6 @@ public abstract class MincraftClientMixin implements IMinecraftClient {
         )
     )
     public boolean useItemBreakCheck(ClientPlayerInteractionManager clientPlayerInteractionManager) {
-        return Modules.get().isActive(MultiTask.class) ? false : ((InteractEvent)MeteorClient.EVENT_BUS.post((Object)InteractEvent.get(clientPlayerInteractionManager.isBreakingBlock()))).usingItem;
+        return !Modules.get().isActive(MultiTask.class) && ((InteractEvent) MeteorClient.EVENT_BUS.post((Object) InteractEvent.get(clientPlayerInteractionManager.isBreakingBlock()))).usingItem;
     }
 }

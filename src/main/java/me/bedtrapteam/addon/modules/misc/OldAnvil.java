@@ -9,7 +9,7 @@ import net.minecraft.util.shape.VoxelShapes;
 
 public class OldAnvil extends Module {
     public OldAnvil() {
-        super(BedTrap.Misc, "old-anvil", "Allows you to move while you burrowed with anvil. Tyrannys <3");
+        super(BedTrap.Misc, "old-anvil", "Allows you to move while you burrowed with anvil. Tyrannus <3");
     }
 
     private final VoxelShape BASE_SHAPE = Block.createCuboidShape(0.0D, 0.0D, 0.0D, 0.0D, 0.0D, 0.0D);

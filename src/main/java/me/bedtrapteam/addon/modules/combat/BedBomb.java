@@ -86,8 +86,8 @@ public class BedBomb extends Module {
 
     //PVP
     private final Setting<Boolean> lay = sgPVP.add(new BoolSetting.Builder().name("auto-lay").defaultValue(false).build());
-    private final Setting<Keybind> forceLay = sgPVP.add(new KeybindSetting.Builder().name("force-lay").description("AutoLay starts work if the keybind is pressed. Useful agains player with bed instamine.").defaultValue(Keybind.none()).build());
-    public final Setting<Integer> allowedFails = sgPVP.add(new IntSetting.Builder().name("fail-times").description("How much AutoLay fails can be dealed.").defaultValue(2).sliderRange(0, 10).min(0).max(10).visible(lay::get).build());
+    private final Setting<Keybind> forceLay = sgPVP.add(new KeybindSetting.Builder().name("force-lay").description("AutoLay starts work if the keybind is pressed. Useful against player with bed instamine.").defaultValue(Keybind.none()).build());
+    public final Setting<Integer> allowedFails = sgPVP.add(new IntSetting.Builder().name("fail-times").description("How much AutoLay fails can be dealt.").defaultValue(2).sliderRange(0, 10).min(0).max(10).visible(lay::get).build());
     private final Setting<Boolean> zeroTick = sgPVP.add(new BoolSetting.Builder().name("zero-tick").description("Tries to zero tick your target faster.").defaultValue(true).build());
 
     //Burrow Breaker
@@ -113,7 +113,7 @@ public class BedBomb extends Module {
     //Other
     private final Setting<Boolean> pauseOnUse = sgOther.add(new BoolSetting.Builder().name("pause-on-use").description("Pauses while using items.").defaultValue(true).build());
     private final Setting<Boolean> pauseOnCA = sgOther.add(new BoolSetting.Builder().name("pause-on-CA").description("Pauses while Crystal Aura is activated.").defaultValue(false).build());
-    private final Setting<Boolean> hurtTime = sgOther.add(new BoolSetting.Builder().name("hurt-time").description("Place only while target can recieve damage. Not recommended to use this.").defaultValue(false).build());
+    private final Setting<Boolean> hurtTime = sgOther.add(new BoolSetting.Builder().name("hurt-time").description("Place only while target can receive damage. Not recommended to use this.").defaultValue(false).build());
 
     //Bed Re-fill
     private final Setting<Boolean> bedRefill = sgBedRefill.add(new BoolSetting.Builder().name("bed-refill").description("Moves beds into a selected hotbar slot.").defaultValue(true).build());
@@ -147,7 +147,7 @@ public class BedBomb extends Module {
     private final Task stageTask = new Task();
     private final Task secondStageTask = new Task();
 
-    private List<BlockPos> strings = new ArrayList<>();
+    private final List<BlockPos> strings = new ArrayList<>();
     private final Pool<RenderText> renderTextPool = new Pool<>(RenderText::new);
     private final List<RenderText> renderTexts = new ArrayList<>();
 
@@ -160,6 +160,8 @@ public class BedBomb extends Module {
     public BedBomb() {
         super(BedTrap.Combat, "bed-bomb", "Massive ownage incoming :massivetroll:");
     }
+    
+    // TODO: Fix this not doing anything
 
     @Override
     public void onActivate() {
@@ -196,8 +198,8 @@ public class BedBomb extends Module {
     }
 
     @EventHandler(priority = EventPriority.HIGHEST + 1000)
-    private void onTick(TickEvent.Pre event) {
-        if (mc.world.getDimension().isBedWorking()) return;
+    private void PreTick1(TickEvent.Pre event) {
+        if (mc.world.getDimension().bedWorks()) return;
 
         boolean sHurt;
         countTicks = placeDelay.get();
@@ -212,8 +214,7 @@ public class BedBomb extends Module {
         renderTexts.forEach(RenderText::tick);
         renderTexts.removeIf(renderText -> renderText.ticks <= 0);
 
-        if (pauseOnCA.get() && (Modules.get().get(CrystalAura.class).isActive() || Modules.get().get(AutoCrystal.class).isActive()))
-            return;
+        if (pauseOnCA.get() && (Modules.get().get(CrystalAura.class).isActive() || Modules.get().get(AutoCrystal.class).isActive())) return;
 
         target = TargetUtils.getPlayerTarget(targetRange.get(), SortPriority.LowestDistance);
         if (TargetUtils.isBadTarget(target, targetRange.get()) || pauseOnUse.get() && mc.player.isUsingItem()) return;
@@ -224,7 +225,7 @@ public class BedBomb extends Module {
             if (placeDirection != null && finalPos != null) {
 
                 int i = placeDelay.get() <= 9 ? 0 : placeDelay.get() / 2;
-                if (failTimes >= allowedFails.get() || smartLay == true) i = 0;
+                if (failTimes >= allowedFails.get() || smartLay) i = 0;
                 countTicks = placeDelay.get() - i;
                 if (placeTicks <= 0) {
                     bedRefill();
@@ -238,8 +239,7 @@ public class BedBomb extends Module {
             failTimes = -1;
         }
 
-        if (target.hurtTime != 0 && hurtTime.get()) sHurt = false;
-        else sHurt = true;
+        sHurt = target.hurtTime == 0 || !hurtTime.get();
 
         if (EntityUtils.getTotalHealth(target) <= 11 && zeroTick.get() && !isSurrounded(target)) {
             int i = placeDelay.get() <= 9 ? 0 : placeDelay.get() / 2;
@@ -256,7 +256,7 @@ public class BedBomb extends Module {
     }
 
     @EventHandler
-    private void onPreSlowTick(TickEvent.Pre event) {
+    private void PreTick2(TickEvent.Pre event) {
         if (TargetUtils.isBadTarget(target, targetRange.get()) || pauseOnUse.get() && mc.player.isUsingItem()) return;
 
         if (bBreakerMain.get()
@@ -325,9 +325,10 @@ public class BedBomb extends Module {
                         });
                         for (BlockPos p : strings) {
                             renderTexts.add(renderTextPool.get().set(p, "String"));
-                            switch (sBreakerMode.get()) {
-                                case Packet -> packetMine(p, false, breakTask);
-                                default -> normalMine(p, false);
+                            if (sBreakerMode.get() == MineMode.Packet) {
+                                packetMine(p, false, breakTask);
+                            } else {
+                                normalMine(p, false);
                             }
                         }
                     }
@@ -345,8 +346,7 @@ public class BedBomb extends Module {
     public void onBreakPacket(PacketEvent.Receive event) {
         if (!lay.get() || mc.world == null || mc.player == null || target == null || finalPos == null || placeDirection == null)
             return;
-        if (event.packet instanceof BlockBreakingProgressS2CPacket) {
-            BlockBreakingProgressS2CPacket packet = (BlockBreakingProgressS2CPacket) event.packet;
+        if (event.packet instanceof BlockBreakingProgressS2CPacket packet) {
             BlockPos packetBp = packet.getPos();
 
             if (packetBp.equals(prevBreakPos) && packet.getProgress() > 0) return;
@@ -408,8 +408,8 @@ public class BedBomb extends Module {
         Rotations.rotate(y, p, 1000000, () -> {
             int prevSlot = mc.player.getInventory().selectedSlot;
             InvUtils.swap(bedItem.slot(), false);
-            mc.getNetworkHandler().sendPacket(new PlayerInteractBlockC2SPacket(Hand.MAIN_HAND, placeResult));
-            mc.interactionManager.interactBlock(mc.player, mc.world, Hand.OFF_HAND, breakResult);
+            mc.getNetworkHandler().sendPacket(new PlayerInteractBlockC2SPacket(Hand.MAIN_HAND, placeResult, 0));
+            mc.interactionManager.interactBlock(mc.player, Hand.OFF_HAND, breakResult);
             mc.player.getInventory().selectedSlot = prevSlot;
             mc.getNetworkHandler().sendPacket(new HandSwingC2SPacket(Hand.MAIN_HAND));
             mc.getNetworkHandler().sendPacket(new HandSwingC2SPacket(Hand.OFF_HAND));
@@ -439,11 +439,11 @@ public class BedBomb extends Module {
             int prevSlot = mc.player.getInventory().selectedSlot;
             InvUtils.swap(bedItem.slot(), false);
             if (failTimes >= allowedFails.get()) {
-                mc.getNetworkHandler().sendPacket(new PlayerInteractBlockC2SPacket(Hand.MAIN_HAND, placeResult));
-                mc.interactionManager.interactBlock(mc.player, mc.world, Hand.OFF_HAND, breakResult);
+                mc.getNetworkHandler().sendPacket(new PlayerInteractBlockC2SPacket(Hand.MAIN_HAND, placeResult, 0));
+                mc.interactionManager.interactBlock(mc.player, Hand.OFF_HAND, breakResult);
             } else {
-                mc.interactionManager.interactBlock(mc.player, mc.world, Hand.OFF_HAND, breakResult);
-                mc.getNetworkHandler().sendPacket(new PlayerInteractBlockC2SPacket(Hand.MAIN_HAND, placeResult));
+                mc.interactionManager.interactBlock(mc.player, Hand.OFF_HAND, breakResult);
+                mc.getNetworkHandler().sendPacket(new PlayerInteractBlockC2SPacket(Hand.MAIN_HAND, placeResult, 0));
             }
             mc.player.getInventory().selectedSlot = prevSlot;
             mc.getNetworkHandler().sendPacket(new HandSwingC2SPacket(Hand.MAIN_HAND));

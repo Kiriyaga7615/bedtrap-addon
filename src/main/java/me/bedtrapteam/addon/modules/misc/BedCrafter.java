@@ -68,7 +68,6 @@ public class BedCrafter extends Module {
     }
 
     private boolean didRefill = false;
-    private boolean startedRefill = false;
     private boolean alertedNoMats = false;
 
     private int placeTimer, openTimer;
@@ -126,7 +125,6 @@ public class BedCrafter extends Module {
 
         if (didRefill && !needsRefill()) {
             didRefill = false;
-            startedRefill = false;
         }
 
         if (mc.player.currentScreenHandler instanceof CraftingScreenHandler currentScreenHandler) {
@@ -166,7 +164,7 @@ public class BedCrafter extends Module {
                             if (recipe.isEmpty())  break;
                             assert mc.interactionManager != null;
                             mc.interactionManager.clickRecipe(currentScreenHandler.syncId, recipe, false);
-                            windowClick(currentScreenHandler, 0, SlotActionType.QUICK_MOVE, 1);
+                            windowClick(currentScreenHandler);
                         }
                     }
                 }
@@ -194,7 +192,7 @@ public class BedCrafter extends Module {
     private void openCraftingTable(BlockPos tablePos) {
         Vec3d tableVec = closestVec3d(tablePos);
         BlockHitResult table = new BlockHitResult(tableVec, Direction.UP, tablePos, false);
-        mc.interactionManager.interactBlock(mc.player, mc.world, Hand.MAIN_HAND, table);
+        mc.interactionManager.interactBlock(mc.player, Hand.MAIN_HAND, table);
     }
 
     private void closeCraftingTable() {
@@ -233,8 +231,8 @@ public class BedCrafter extends Module {
         return offhand != Items.TOTEM_OF_UNDYING;
     }
 
-    private void windowClick(ScreenHandler container, int slot, SlotActionType action, int clickData) {
+    private void windowClick(ScreenHandler container) {
         assert mc.interactionManager != null;
-        mc.interactionManager.clickSlot(container.syncId, slot, clickData, action, mc.player);
+        mc.interactionManager.clickSlot(container.syncId, 0, 1, SlotActionType.QUICK_MOVE, mc.player);
     }
 }

@@ -10,9 +10,9 @@
     "AnvilBlockMixin",
     "ChatUtilsMixin",
     "HeldItemRenderMixin",
-    "MincraftClientMixin",
+    "MinecraftClientMixin",
+    "PlayerEntityMixin",
     "ResourceManagerMixin",
-    "ToggleMixin",
-    "PlayerEntityMixin"
+    "ToggleMixin"
   ]
 }

@@ -50,7 +50,7 @@ public class CevBreaker extends Module {
     private final Setting<Integer> targetRange = sgGeneral.add(new IntSetting.Builder().name("target-range").description("The range players can be targeted.").defaultValue(6).sliderRange(0, 7).build());
     private final Setting<Boolean> instant = sgGeneral.add(new BoolSetting.Builder().name("instant").description("Uses instamine exploit.").defaultValue(false).build());
     private final Setting<Double> breakProgress = sgGeneral.add(new DoubleSetting.Builder().name("break-progress").description("Places crystal if break progress of breaking block is higher.").defaultValue(0.95).sliderRange(0, 0.99).visible(() -> !instant.get()).build());
-    private final Setting<Boolean> rightClickEat = sgGeneral.add(new BoolSetting.Builder().name("right-click-eat").description("Stops breaking the block and starts eating EGapple.").defaultValue(false).build());
+    private final Setting<Boolean> rightClickEat = sgGeneral.add(new BoolSetting.Builder().name("right-click-eat").description("Stops breaking the block and starts eating Egaps.").defaultValue(false).build());
     private final Setting<Integer> delay = sgGeneral.add(new IntSetting.Builder().name("delay").description("Delay for breaking block with instamine exploit.").defaultValue(10).sliderRange(5, 20).visible(instant::get).build());
     private final Setting<Boolean> ninja = sgGeneral.add(new BoolSetting.Builder().name("ninja").description("Places obsidian above target head if its time to place crystal.").defaultValue(false).visible(instant::get).build());
     private final Setting<Boolean> rotate = sgGeneral.add(new BoolSetting.Builder().name("rotate").description("Automatically faces towards the blocks being placed.").defaultValue(false).build());
@@ -67,7 +67,8 @@ public class CevBreaker extends Module {
         super(BedTrap.Combat, "cev-breaker", "");
     }
 
-    private FindItemResult pickaxe, crystal, obsidian, gap;
+    private FindItemResult crystal;
+    private FindItemResult obsidian;
     private EndCrystalEntity crystalEntity;
     private BlockPos breakPos, prevPos;
     private PlayerEntity target;
@@ -109,7 +110,7 @@ public class CevBreaker extends Module {
     public void onTick(TickEvent.Post event) {
         assert mc.player != null && mc.world != null && mc.interactionManager != null;
 
-        pickaxe = InvUtils.findInHotbar(Items.NETHERITE_PICKAXE, Items.DIAMOND_PICKAXE);
+        FindItemResult pickaxe = InvUtils.findInHotbar(Items.NETHERITE_PICKAXE, Items.DIAMOND_PICKAXE);
         crystal = InvUtils.findInHotbar(Items.END_CRYSTAL);
         obsidian = InvUtils.findInHotbar(Items.OBSIDIAN);
 
@@ -126,7 +127,7 @@ public class CevBreaker extends Module {
             return;
         }
 
-        gap = InvUtils.find(Items.ENCHANTED_GOLDEN_APPLE, Items.GOLDEN_APPLE);
+        FindItemResult gap = InvUtils.find(Items.ENCHANTED_GOLDEN_APPLE, Items.GOLDEN_APPLE);
         if (rightClickEat.get() && mc.options.useKey.isPressed() && gap.found()) isEating = true;
 
         if (isEating) {
@@ -191,7 +192,7 @@ public class CevBreaker extends Module {
                         int prevSlot = mc.player.getInventory().selectedSlot;
                         if (mc.player.getOffHandStack().getItem() != Items.END_CRYSTAL) mc.player.getInventory().selectedSlot = crystal.slot();
 
-                        mc.interactionManager.interactBlock(mc.player, mc.world, crystal.getHand(), new BlockHitResult(mc.player.getPos(), Direction.DOWN, breakPos, true));
+                        mc.interactionManager.interactBlock(mc.player, crystal.getHand(), new BlockHitResult(mc.player.getPos(), Direction.DOWN, breakPos, true));
                         mc.player.getInventory().selectedSlot = prevSlot;
                     });
                 }
@@ -230,7 +231,7 @@ public class CevBreaker extends Module {
                     if (debug.get()) info("crystal placed");
                     int prevSlot = mc.player.getInventory().selectedSlot;
                     if (mc.player.getOffHandStack().getItem() != Items.END_CRYSTAL) mc.player.getInventory().selectedSlot = crystal.slot();
-                    mc.interactionManager.interactBlock(mc.player, mc.world, crystal.getHand(), new BlockHitResult(mc.player.getPos(), Direction.DOWN, breakPos, true));
+                    mc.interactionManager.interactBlock(mc.player, crystal.getHand(), new BlockHitResult(mc.player.getPos(), Direction.DOWN, breakPos, true));
                     mc.player.getInventory().selectedSlot = prevSlot;
                 });
             }

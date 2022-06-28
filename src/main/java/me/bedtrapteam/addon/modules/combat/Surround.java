@@ -61,7 +61,7 @@ public class Surround extends Module {
 
     //force
     private final Setting<Boolean> forceSurround = sgForce.add(new BoolSetting.Builder().name("force-surround").description("Force places surround blocks(cool for ping players or bad servers)").defaultValue(false).build());
-    private final Setting<Keybind> forceDouble = sgForce.add(new KeybindSetting.Builder().name("force-doube").description("Force double height surround").defaultValue(Keybind.fromKey(-1)).build());
+    private final Setting<Keybind> forceDouble = sgForce.add(new KeybindSetting.Builder().name("force-double").description("Force double height surround").defaultValue(Keybind.fromKey(-1)).build());
     private final Setting<Keybind> forceTrap = sgForce.add(new KeybindSetting.Builder().name("force-trap").description("Force self trap").defaultValue(Keybind.fromKey(-1)).build());
     private final Setting<Keybind> forceAntiCity = sgForce.add(new KeybindSetting.Builder().name("force-anti-city").description("Force anti city blocks").defaultValue(Keybind.fromKey(-1)).build());
 
@@ -208,19 +208,19 @@ public class Surround extends Module {
                     boolean finalMine = mine;
                     Predicate<Entity> ePr = entity -> entity instanceof EndCrystalEntity && finalMine;
 
-                    for (Entity crstal : mc.world.getOtherEntities(null, pBox, ePr)) {
-                        if (mc.player.distanceTo(crstal) <= 2.6) {
+                    for (Entity crystal : mc.world.getOtherEntities(null, pBox, ePr)) {
+                        if (mc.player.distanceTo(crystal) <= 2.6) {
                             if (antiCrystal.get() && antiCrystalBlockSwap.get()) InvUtils.swap(block.slot(), false);
                             if (swapDelay>0) return;
                             if (rotate.get()) {
-                                Rotations.rotate(Rotations.getPitch(crstal), Rotations.getYaw(crstal), () -> {
-                                    mc.player.networkHandler.sendPacket(PlayerInteractEntityC2SPacket.attack(crstal, mc.player.isSneaking()));
+                                Rotations.rotate(Rotations.getPitch(crystal), Rotations.getYaw(crystal), () -> {
+                                    mc.player.networkHandler.sendPacket(PlayerInteractEntityC2SPacket.attack(crystal, mc.player.isSneaking()));
                                 });
                             } else {
-                                mc.player.networkHandler.sendPacket(PlayerInteractEntityC2SPacket.attack(crstal, mc.player.isSneaking()));
+                                mc.player.networkHandler.sendPacket(PlayerInteractEntityC2SPacket.attack(crystal, mc.player.isSneaking()));
                             }
                             mc.getNetworkHandler().sendPacket(new HandSwingC2SPacket(Hand.MAIN_HAND));
-                            if (antiCrystalBlock.get()) antiCrystalPos = crstal.getBlockPos();
+                            if (antiCrystalBlock.get()) antiCrystalPos = crystal.getBlockPos();
                         }
                     }
                 }
@@ -445,7 +445,7 @@ public class Surround extends Module {
             BlockHitResult result = new BlockHitResult(Utils.vec3d(pos), Direction.DOWN, pos, false);
             int prevSlot = mc.player.getInventory().selectedSlot;
             InvUtils.swap(iresult.slot(), false);
-            mc.getNetworkHandler().sendPacket(new PlayerInteractBlockC2SPacket(Hand.MAIN_HAND, result));
+            mc.getNetworkHandler().sendPacket(new PlayerInteractBlockC2SPacket(Hand.MAIN_HAND, result, 0));
             mc.player.getInventory().selectedSlot = prevSlot;
             if (swing.get())mc.player.swingHand(Hand.MAIN_HAND); else mc.getNetworkHandler().sendPacket(new HandSwingC2SPacket(Hand.MAIN_HAND));
         }

@@ -755,7 +755,7 @@ public class AutoCrystal extends Module {
         // Place
         if (supportBlock == null) {
             // Place crystal
-            mc.player.networkHandler.sendPacket(new PlayerInteractBlockC2SPacket(hand, result));
+            mc.player.networkHandler.sendPacket(new PlayerInteractBlockC2SPacket(hand, result, 0));
 
             // Swing
             Interaction.doSwing(swing.get(), packetSwing.get(), hand);
