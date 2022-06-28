@@ -23,13 +23,9 @@ public class BlockInfo {
     public static Box getBox(BlockPos block) {return getShape(block).getBoundingBox();}
     public static Block getBlock(BlockPos block) {return mc.world.getBlockState(block).getBlock();}
     public static boolean isAir(BlockPos block) {return mc.world.getBlockState(block).isAir();}
-    public static Material getMaterial(BlockPos block) {return mc.world.getBlockState(block).getMaterial();}
     public static float getBlastResistance(BlockPos block) {return mc.world.getBlockState(block).getBlock().getBlastResistance();}
     public static float getBlastResistance(Block block) {return block.getBlastResistance();}
     public static boolean isReplaceable(BlockPos block) {return mc.world.getBlockState(block).getMaterial().isReplaceable();}
-    public static boolean isSolid(BlockPos block) {return mc.world.getBlockState(block).getMaterial().isSolid();}
-    public static boolean isBurnable(BlockPos block) {return mc.world.getBlockState(block).getMaterial().isBurnable();}
-    public static boolean isLiquid(BlockPos block) {return mc.world.getBlockState(block).getMaterial().isLiquid();}
     public static float getHardness(BlockPos block) {return mc.world.getBlockState(block).getHardness(mc.world,block);}
     public static float getHardness(Block block) {return block.getHardness();}
     public static boolean isBlastResist(BlockPos block) {return getBlastResistance(block) >= 600;}
@@ -45,9 +41,6 @@ public class BlockInfo {
     public static int Y(BlockPos block) {return block.getY();}
     public static int Z(BlockPos block) {return block.getZ();}
     public static boolean isWithinRange(BlockPos block, double range) {return mc.player.getBlockPos().isWithinDistance(block, range);}
-    public static boolean isFullCube(BlockPos block) {
-        return getState(block).isFullCube(mc.world, block);
-    }
     public static Vec3d closestVec3d(BlockPos blockpos) {
         if (blockpos == null) return new Vec3d(0.0, 0.0, 0.0);
         double x = MathHelper.clamp((mc.player.getX() - blockpos.getX()), 0.0, 1.0);
